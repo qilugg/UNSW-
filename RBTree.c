@@ -41,10 +41,120 @@ Tree newNode(Item it) {
 
 Tree rotateRight(Tree);
 Tree rotateLeft(Tree);
-Tree insertRB(Tree t,int item,bool inRight);
-Tree insertRedBlack(Tree t, int item);
 
 // insert a new item into a tree
+Tree insertRB(Tree RBtree,int i,bool val){
+    if(RBtree==NULL)
+	{
+        RBtree=newNode(i);
+        return RBtree;
+	}
+	
+    else{
+    	if(i==data(RBtree)) {
+    		return RBtree;	
+		}
+	}
+	 
+    if(left(RBtree)!=NULL&&right(RBtree)!=NULL)
+	{
+//		 //printf("+++++++++++++++++++");
+    	if(colour(left(RBtree))==RED&&colour(right(RBtree))==RED){
+        	colour(right(RBtree))=BLACK;   //black
+			colour(RBtree)=RED;				//red
+        	colour(left(RBtree))=BLACK;
+        	
+		}
+	}
+	
+    if(i<data(RBtree)){
+        left(RBtree)=insertRB(left(RBtree),i,false);
+        //情况1 
+        //printf("-----------start---------------");
+        if(RBtree!=NULL&&left(RBtree)!=NULL){
+        	if(val&&colour(RBtree)==RED&&colour(left(RBtree))==RED)
+			{
+			 RBtree=rotateRight(RBtree);
+			}
+		}
+		//情况2 
+        if(RBtree!=NULL&&right(RBtree)!=NULL)
+		{
+        	if(!val && colour(RBtree)==RED&&colour(right(RBtree))==RED) {
+        		RBtree=rotateLeft(RBtree);
+			}
+		}
+		//情况3
+        if(left(RBtree)!=NULL&&left(left(RBtree))!=NULL)
+		{
+	        if(colour(left(RBtree))==RED&&colour(left(left(RBtree)))==RED){
+	        	//right
+	            RBtree=rotateRight(RBtree);
+	            colour(RBtree)=BLACK;
+	            colour(right(RBtree))=RED;
+        	}
+		}
+        //情况4 
+
+        if(right(RBtree)!=NULL&&right(right(RBtree))!=NULL){
+	        if(colour(right(RBtree))==RED && colour(right(right(RBtree)))==RED){
+	        	//left
+	            RBtree=rotateLeft(RBtree);
+	            colour(RBtree)=BLACK;
+	            colour(left(RBtree))=RED;
+	        }
+		}
+		//printf("----------end-------");
+    }
+    //其他 
+	else{
+        right(RBtree)=insertRB(right(RBtree),i,true);
+        if(RBtree!=NULL&&left(RBtree)!=NULL){
+        	//printf("--------------------");
+        	if(val && colour(RBtree)==RED && colour(left(RBtree))==RED) 
+				{
+					//right
+					RBtree=rotateRight(RBtree);
+				}
+		}
+        if(RBtree!=NULL&&right(RBtree)!=NULL)
+		{
+        	if(!val&&colour(RBtree)==RED&&colour(right(RBtree))==RED) 
+				{
+					//left
+					RBtree=rotateLeft(RBtree);
+				}
+		}
+				
+        if(left(RBtree)!=NULL&&left(left(RBtree))!=NULL){
+	    //printf("+++++++++++++++++++");
+		    if(colour(left(RBtree))==RED&&colour(left(left(RBtree)))==RED){
+	            RBtree=rotateRight(RBtree);
+	            colour(RBtree)=BLACK;
+	            colour(right(RBtree))=RED;
+	        }
+		}
+		// printf("Not yet implemented.\n");
+		//printf("Returning a fixed tree instead:\n");
+        if(right(RBtree)!=NULL&&right(right(RBtree))!=NULL){
+	        if(colour(right(RBtree))==RED && colour(right(right(RBtree)))==RED){
+	            RBtree=rotateLeft(RBtree);
+	            colour(RBtree)=BLACK;
+	            colour(left(RBtree))=RED;
+	        }
+		}
+    }
+    return RBtree;
+}
+
+
+Tree insertRedBlack(Tree tree, int i){
+    tree=insertRB(tree, i, false);
+    //blcck
+	colour(tree)=BLACK;
+    return tree;
+}
+
 Tree TreeInsert(Tree t, Item it) {
 
 //   printf("Not yet implemented.\n");
@@ -60,61 +170,7 @@ Tree TreeInsert(Tree t, Item it) {
     return t;
 
 }
-Tree insertRB(Tree t,int item,bool inRight){
-    if(t==NULL){
-        t=newNode(item);
-        return t;}
-    else if(item == data(t)) return t;
-    if(left(t)!=NULL && right(t)!=NULL){
-    if(colour(left(t))==RED && colour(right(t))==RED){
-        colour(t)=RED;
-        colour(left(t))=BLACK;
-        colour(right(t))=BLACK;}}
-    if(item <data(t)){
-        left(t)=insertRB(left(t), item, false);
-        if(t!=NULL && left(t)!=NULL){
-        if(inRight && colour(t)==RED && colour(left(t))==RED) t=rotateRight(t);}
-        if(t!=NULL && right(t)!=NULL){
-        if(!inRight && colour(t)==RED && colour(right(t))==RED) t=rotateLeft(t);}
-        if(left(t)!=NULL && left(left(t))!=NULL){
-        if(colour(left(t))==RED && colour(left(left(t)))==RED){
-            t=rotateRight(t);
-            colour(t)=BLACK;
-            colour(right(t))=RED;
-        }}
-        if(right(t)!=NULL && right(right(t))!=NULL){
-        if(colour(right(t))==RED && colour(right(right(t)))==RED){
-            t=rotateLeft(t);
-            colour(t)=BLACK;
-            colour(left(t))=RED;
-        }}
-    }else{
-        right(t)=insertRB(right(t), item, true);
-        if(t!=NULL && left(t)!=NULL){
-        if(inRight && colour(t)==RED && colour(left(t))==RED) t=rotateRight(t);}
-        if(t!=NULL && right(t)!=NULL){
-        if(!inRight && colour(t)==RED &&colour( right(t))==RED) t=rotateLeft(t);}
-        if(left(t)!=NULL && left(left(t))!=NULL){
-        if(colour(left(t))==RED && colour(left(left(t)))==RED){
-            t=rotateRight(t);
-            colour(t)=BLACK;
-            colour(right(t))=RED;
-        }}
-        if(right(t)!=NULL && right(right(t))!=NULL){
-        if(colour(right(t))==RED && colour(right(right(t)))==RED){
-            t=rotateLeft(t);
-            colour(t)=BLACK;
-            colour(left(t))=RED;
-        }}
-    }
-    return t;
-}
 
-Tree insertRedBlack(Tree t, int item){
-    t=insertRB(t, item, false);
-    colour(t)=BLACK;
-    return t;
-}
 
 // check whether a key is in a Tree
 bool TreeSearch(Tree t, Item it) {
