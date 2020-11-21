@@ -1,17 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(){
+int main(int argc,char *argv[]){
 	
 	
-	int length,seed,i,res;
+	int l,s,i,res;
 	char str;
-	scanf("%d",&length);
-	scanf("%d",&seed);
+	l=atoi(argv[1]);
+	s=atoi(argv[2]);
 	
 
-	srand(seed);
-	for(i=0;i<length;i++){
+	srand(s);
+	for(i=0;i<l;i++){
 		res=rand()%26;
 		str=97+res;
 		printf("%c",str);
